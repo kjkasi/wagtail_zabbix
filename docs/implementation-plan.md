@@ -2,7 +2,7 @@
 
 ## 1. Current state
 
-The repository currently contains only a `README.md`; there is no Django/Wagtail project yet. The first implementation step is therefore project scaffolding rather than modification of an existing application.
+The repository now contains a Wagtail 7.2/Django 5.2 project scaffold with split settings, SQLite development configuration, a home page, search, and test coverage. Phase 1 content/authentication and the Phase 2 subscription slice are implemented; notification events, delivery, and Zabbix integration remain.
 
 ## 2. Prototype objective
 
@@ -156,15 +156,15 @@ Keep the sender and receiver behind interfaces so tests do not require a running
 
 ### Phase 1 — Content and authentication
 
-- Create the home page and a small demo page hierarchy.
-- Configure users, login/logout, and a minimal profile/onboarding path.
-- Add page metadata controlling whether subscriptions are allowed.
+- [x] Create the home page and a small demo page hierarchy.
+- [x] Configure users, login/logout, and a minimal profile/onboarding path.
+- [x] Add page metadata controlling whether subscriptions are allowed.
 
 ### Phase 2 — Subscriptions
 
-- Add `PageSubscription` and migrations.
-- Implement subscribe/unsubscribe actions and page UI.
-- Add permissions, CSRF protection, duplicate prevention, and tests.
+- [x] Add `PageSubscription` and migrations.
+- [x] Implement subscribe/unsubscribe actions and page UI.
+- [x] Add permissions, CSRF protection, duplicate prevention, and tests.
 
 ### Phase 3 — Notification service
 

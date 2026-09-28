@@ -9,10 +9,19 @@ Prototype Wagtail + Zabbix integration application.
 The project is pinned to the Wagtail 7.2 LTS line and Django 5.2. It currently provides:
 
 - A Wagtail home page with an editable welcome message.
+- Subscription-eligible demo pages with authenticated subscribe/unsubscribe controls.
+- Durable subscriptions that are deactivated rather than deleted.
 - Development settings using console email.
 - SQLite for local development.
 - Wagtail admin at `/admin/`.
 - Search at `/search/`.
+
+## Subscription demo
+
+1. Run migrations and create a superuser.
+2. Open `/admin/`, create a **Demo page** beneath the home page, and publish it.
+3. Open the page publicly, sign in, and use **Subscribe to updates**.
+4. Submit the control again to verify it is idempotent, then unsubscribe. Publication notifications and delivery tracking are the next implementation phase.
 
 ## Local setup
 

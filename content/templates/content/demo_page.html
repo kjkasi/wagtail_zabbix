@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block body_class %}template-demo-page{% endblock %}
+
+{% block content %}
+<header>
+    <p><a href="/">Wagtail + Zabbix prototype</a></p>
+    {% if request.user.is_authenticated %}
+        <p>Signed in as {{ request.user.get_username }} · <a href="{% url 'logout' %}">Sign out</a></p>
+    {% else %}
+        <p><a href="{% url 'login' %}?next={{ request.path|urlencode }}">Sign in to subscribe</a></p>
+    {% endif %}
+</header>
+
+<main>
+    <h1>{{ page.title }}</h1>
+    {% if page.intro %}
+        <div>{{ page.intro|richtext }}</div>
+    {% endif %}
+
+    {% if page.allow_subscriptions %}
+        {% if request.user.is_authenticated %}
+            {% if subscription %}
+                <form method="post" action="{% url 'notifications:unsubscribe' page.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Unsubscribe from updates</button>
+                </form>
+                <p>You are subscribed to this page.</p>
+            {% else %}
+                <form method="post" action="{% url 'notifications:subscribe' page.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Subscribe to updates</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <p>Subscriptions are not available for this page.</p>
+    {% endif %}
+</main>
+{% endblock %}

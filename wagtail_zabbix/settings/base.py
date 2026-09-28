@@ -35,7 +35,9 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    "content",
     "home",
+    "notifications",
     "search",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",

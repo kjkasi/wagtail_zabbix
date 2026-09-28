@@ -18,5 +18,11 @@ Delete the line below if you're just getting started and want to remove the welc
         {{ page.intro|richtext }}
     </div>
     <p class="welcome-page__status">Wagtail content and Zabbix notifications will appear here.</p>
+    <p><a href="{% url 'wagtailadmin_home' %}">Open the Wagtail admin</a></p>
+    {% if request.user.is_authenticated %}
+        <p>Signed in as {{ request.user.get_username }} · <a href="{% url 'logout' %}">Sign out</a></p>
+    {% else %}
+        <p><a href="{% url 'login' %}?next={{ request.path|urlencode }}">Sign in to manage subscriptions</a></p>
+    {% endif %}
 </main>
 {% endblock content %}
