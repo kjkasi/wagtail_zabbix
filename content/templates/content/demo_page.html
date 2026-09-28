@@ -7,7 +7,11 @@
 <header>
     <p><a href="/">Wagtail + Zabbix prototype</a></p>
     {% if request.user.is_authenticated %}
-        <p>Signed in as {{ request.user.get_username }} · <a href="{% url 'logout' %}">Sign out</a></p>
+        <p>Signed in as {{ request.user.get_username }}</p>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Sign out</button>
+        </form>
     {% else %}
         <p><a href="{% url 'login' %}?next={{ request.path|urlencode }}">Sign in to subscribe</a></p>
     {% endif %}

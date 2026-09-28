@@ -11,9 +11,8 @@ from notifications.models import PageSubscription
 @login_required
 def subscribe(request, page_id):
     page = get_object_or_404(
-        DemoPage,
+        DemoPage.objects.live().public(),
         pk=page_id,
-        live=True,
         allow_subscriptions=True,
     )
     PageSubscription.objects.update_or_create(  # type: ignore[attr-defined]
@@ -29,10 +28,8 @@ def subscribe(request, page_id):
 @login_required
 def unsubscribe(request, page_id):
     page = get_object_or_404(
-        DemoPage,
+        DemoPage.objects.live().public(),
         pk=page_id,
-        live=True,
-        allow_subscriptions=True,
     )
     updated = PageSubscription.objects.filter(  # type: ignore[attr-defined]
         user=request.user,

@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.test import TestCase
 from django.urls import reverse
 
 from content.models import DemoPage
 from home.models import HomePage
 from notifications.models import PageSubscription
-from wagtail.models import Page, Site
+from wagtail.models import Page, PageViewRestriction, Site
 
 
 class SubscriptionTests(TestCase):
@@ -67,6 +68,8 @@ class SubscriptionTests(TestCase):
             user=self.user,
             page=self.demo_page,
         )
+        self.demo_page.allow_subscriptions = False  # type: ignore[assignment]
+        self.demo_page.save(update_fields=["allow_subscriptions"])  # type: ignore[call-arg]
         self.client.force_login(self.user)
 
         response = self.client.post(
@@ -77,6 +80,22 @@ class SubscriptionTests(TestCase):
         subscription.refresh_from_db()
         self.assertFalse(subscription.is_active)
         self.assertEqual(PageSubscription.objects.count(), 1)  # type: ignore[attr-defined]
+
+    def test_subscription_is_not_allowed_for_restricted_page(self):
+        restricted_group = Group.objects.create(name="restricted")
+        restriction = PageViewRestriction.objects.create(  # type: ignore[attr-defined]
+            page=self.demo_page,
+            restriction_type=PageViewRestriction.GROUPS,
+        )
+        restriction.groups.add(restricted_group)  # type: ignore[attr-defined]
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("notifications:subscribe", args=[self.demo_page.pk])
+        )
+
+        self.assertEqual(response.status_code, 404)  # type: ignore[attr-defined]
+        self.assertFalse(PageSubscription.objects.exists())  # type: ignore[attr-defined]
 
     def test_subscription_is_not_allowed_for_opted_out_page(self):
         self.demo_page.allow_subscriptions = False  # type: ignore[assignment]
@@ -89,3 +108,11 @@ class SubscriptionTests(TestCase):
 
         self.assertEqual(response.status_code, 404)  # type: ignore[attr-defined]
         self.assertFalse(PageSubscription.objects.exists())  # type: ignore[attr-defined]
+
+    def test_authenticated_user_can_log_out_with_post(self):
+        self.client.force_login(self.user)
+
+        response = self.client.post(reverse("logout"))
+
+        self.assertEqual(response.status_code, 200)  # type: ignore[attr-defined]
+        self.assertNotIn("_auth_user_id", self.client.session)
