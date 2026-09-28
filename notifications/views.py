@@ -27,10 +27,7 @@ def subscribe(request, page_id):
 @require_POST
 @login_required
 def unsubscribe(request, page_id):
-    page = get_object_or_404(
-        DemoPage.objects.live().public(),
-        pk=page_id,
-    )
+    page = get_object_or_404(DemoPage, pk=page_id)
     updated = PageSubscription.objects.filter(  # type: ignore[attr-defined]
         user=request.user,
         page=page,
@@ -38,4 +35,4 @@ def unsubscribe(request, page_id):
     ).update(is_active=False)
     if updated:
         messages.success(request, f"You are no longer subscribed to {page.title}.")
-    return redirect(page.url)
+    return redirect(page.url or "/")
